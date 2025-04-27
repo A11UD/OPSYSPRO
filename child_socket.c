@@ -41,14 +41,22 @@ int main (void)
 
 	/* Receive message from socket */
 	if ((numbytes=recvfrom(UDPSocket, buffer, MAXBUFLEN, 0, (struct sockaddr *)&their_addr, &addr_len)) == -1){
-		perror ("recfrom");
+		perror ("revfrom");
 		return 0; // exit(1);
 	}
+
+	/* Extract the parent's port number (it's at the start of the message) */
+	sscanf(buffer, "%d:", &parent_port);  // Extract the parent's port number before the colon
 
 	printf("Process[%d]: Received packet from %s\n", getpid(), inet_ntoa(their_addr.sin_addr));
 	printf("Process[%d]: Packet is %d bytes long\n", getpid(), numbytes);
 	buffer[numbytes] = '\0';
 	printf("Process[%d]: Packet contains \"%s\"\n", getpid(), buffer); 
+	
+    /* Print parent's port number */
+    printf("Process[%d]: Parent's port number is %d\n", getpid(), parent_port);
+
+
 	sleep(2);
 	printf("Process[%d]: Child terminating\n", getpid());
 	

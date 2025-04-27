@@ -1,0 +1,7 @@
+{
+    "C_Cpp.errorSquiggles": "disabled",
+    "files.associations": {
+        "windows.h": "c",
+        "winsock2.h": "c"
+    }
+}

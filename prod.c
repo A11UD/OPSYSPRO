@@ -8,6 +8,7 @@
 int item, in=0, out=0;
 int buffer[NBUFFERS];
 int stop=0;
+pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;  // <-- ADD LINE 1
 
 
 void *ProducerTask(void *data)
@@ -20,8 +21,11 @@ void *ProducerTask(void *data)
 	while (!stop) {
 		nanosleep(&mytime, NULL);
 		nextp++;
+
+		pthread_mutex_lock(&lock);  // <-- ADD LINE 2
 		buffer[in] = nextp;   /* produce a new item */
 		in = (in + 1) % NBUFFERS;
+		pthread_mutex_unlock(&lock);
 
 		
 	}

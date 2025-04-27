@@ -63,12 +63,15 @@ int main(int argc, char *argv[])
 	their_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	bzero(&(their_addr.sin_zero), 8);     /* zero the rest of the struct */
 
-	/* Send message */
-	if ((numbytes=sendto(UDPSocket, argv[1], strlen(argv[1]), 0, \
-			(struct sockaddr *)&their_addr, sizeof(struct sockaddr))) == -1) {
-		perror("sendto");
-		return 0; //exit(1);
-	}
+
+	/* Combine the parent's port number with the message */
+    snprintf(buffer, sizeof(buffer), "%d:%s", ntohs(my_addr.sin_port), argv[1]);
+
+	 /* Send message with the parent's port number included */
+	 if ((numbytes = sendto(UDPSocket, buffer, strlen(buffer), 0, (struct sockaddr *)&their_addr, sizeof(struct sockaddr))) == -1) {
+        perror("sendto");
+        return 0; //exit(1);
+    }
 
 	printf("Process[%d]: Sent %d bytes to port %d in %s\n", getpid(),numbytes, ntohs(their_addr.sin_port), inet_ntoa(their_addr.sin_addr));
 	/*Parent waits for the child to terminate */
